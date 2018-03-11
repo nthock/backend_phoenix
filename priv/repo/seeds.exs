@@ -1,11 +1,8 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     BackendPhoenix.Repo.insert!(%BackendPhoenix.SomeModel{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will halt execution if something goes wrong.
+Accounts.create_user(%{
+  name: "Jimmy",
+  email: "jimmy@example.com",
+  designation: "Founder",
+  password: "password",
+  super_admin: true,
+  admin: true
+})
