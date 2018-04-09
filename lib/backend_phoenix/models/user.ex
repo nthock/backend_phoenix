@@ -1,6 +1,7 @@
 defmodule BackendPhoenix.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias BackendPhoenix.Accounts.User
 
   schema "users" do
     field :name, :string
@@ -12,6 +13,8 @@ defmodule BackendPhoenix.Accounts.User do
     field :slug, :string
     field :super_admin, :boolean
     field :admin, :boolean
+
+    timestamps()
   end
 
   @valid_attrs [:name, :email, :password, :password_confirmation, :designation, :contact_number]
@@ -29,7 +32,7 @@ defmodule BackendPhoenix.Accounts.User do
 
   defp hash_password(changeset) do
     case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{password, :password}} ->
+      %Ecto.Changeset{valid?: true, changes: %{password: password} } ->
         put_change(changeset, :encrypted_password, Comeonin.Bcrypt.hashpwsalt(password))
       _ ->
         changeset

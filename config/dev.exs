@@ -20,7 +20,7 @@ use Mix.Config
 # configured to run both http and https servers on
 # different ports.
 config :backend_phoenix, BackendPhoenix.Endpoint,
-  http: [port: 4000],
+  http: [port: 3001],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
