@@ -1,3 +1,5 @@
+alias BackendPhoenix.Accounts
+
 Accounts.create_user(%{
   name: "Jimmy",
   email: "jimmy@example.com",
