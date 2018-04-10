@@ -17,6 +17,12 @@ config :backend_phoenix, BackendPhoenix.Endpoint,
   pubsub: [name: BackendPhoenix.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+ # allow cors access for abo admin
+ config :cors_plug,
+   origin: ~r/http:\/\/localhost:\d{4}/ ,
+   max_age: 86400,
+   methods: ["POST"]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

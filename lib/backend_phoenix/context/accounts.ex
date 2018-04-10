@@ -11,6 +11,6 @@ defmodule BackendPhoenix.Accounts do
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.registration_changeset(attrs)
-    |> Repo.insert
+    |> Repo.insert!
   end
 end
