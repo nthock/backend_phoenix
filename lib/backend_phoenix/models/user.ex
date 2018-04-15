@@ -13,6 +13,7 @@ defmodule BackendPhoenix.Accounts.User do
     field :slug, :string
     field :super_admin, :boolean
     field :admin, :boolean
+    field :errors, {:array, :map}, default: [], virtual: true
 
     timestamps()
   end

@@ -39,8 +39,12 @@ defmodule BackendPhoenix.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
+      {:cors_plug, "~> 1.5"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
+      {:joken, "~> 1.1"},
+      {:ex_machina, "~> 2.1", only: [:test, :ci]},
+      {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4.0"},
       {:excoveralls, "~> 0.8", only: :test}
