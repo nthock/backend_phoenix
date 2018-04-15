@@ -9,9 +9,19 @@ defmodule GraphQL.Resolver.User do
   def create(_parent, %{input: attributes}, _info) do
     user =
       Accounts.create_user(attributes)
-      |> issue_token
+      |> parse_user
 
     {:ok, user}
+  end
+
+  defp parse_user(%{valid?: false, errors: errors}) do
+    {error_key, {reason, _}} = List.first(errors)
+    %{errors: %{key: error_key, value: reason}}
+  end
+
+  defp parse_user(user) do
+    user
+    |> issue_token
   end
 
   defp issue_token(user) do

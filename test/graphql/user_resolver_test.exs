@@ -1,10 +1,9 @@
 defmodule BackendPhoenix.GraphQL.UserResolverTest do
   use BackendPhoenix.ConnCase, async: true
   import BackendPhoenix.Factory
-  alias BackendPhoenix.Accounts
 
   setup do
-    user = insert(:user)
+    insert(:user)
     :ok
   end
 
@@ -50,7 +49,7 @@ defmodule BackendPhoenix.GraphQL.UserResolverTest do
     assert [%{"name" => "Jimmy"}] = results
   end
 
-  test "create user" do
+  test "create user with valid attributes" do
     variables = %{
       name: "Test User",
       email: "test@example.com",
@@ -61,8 +60,26 @@ defmodule BackendPhoenix.GraphQL.UserResolverTest do
       build_conn()
       |> post("/graphql", query: @createUserMutation, variables: variables)
 
-    IO.inspect(response)
+    # IO.inspect(json_response(response, 200))
     assert %{"data" => %{"createUser" => result}} = json_response(response, 200)
     assert %{"name" => "Test User", "email" => "test@example.com"} = result
+    assert %{"errors" => []} = result
+  end
+
+  test "create user with unmatched password" do
+    variables = %{
+      name: "Test User",
+      email: "test@example.com",
+      password: "password123",
+      password_confirmation: "password1234"
+    }
+    response =
+      build_conn()
+      |> post("/graphql", query: @createUserMutation, variables: variables)
+
+    assert %{"data" => %{"createUser" => result}} = json_response(response, 200)
+    {:ok, errors} = result |> Map.fetch("errors")
+    assert Enum.count(errors) == 1
+    assert %{"key" => "password_confirmation", "value" => "does not match"} = List.first(errors)
   end
 end

@@ -1,6 +1,11 @@
 defmodule GraphQL.Schema.UserType do
   defmacro __using__(_opts) do
     quote do
+      object :user_result do
+        field :user, :user
+        field :errors, list_of(:errors)
+      end
+
       object :user do
         field :id, :id
         field :name, :string
