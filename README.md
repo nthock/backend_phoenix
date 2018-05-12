@@ -22,3 +22,8 @@ To Run Seed file:
 ```
 mix run priv/repo/seeds.exs
 ```
+
+To generate the test coverage report:
+```
+MIX_ENV=test mix coveralls.html
+```

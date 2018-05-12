@@ -1,0 +1,10 @@
+{
+  "skip_files": [
+    "web",
+    "lib/backend_phoenix/graphql/schema/types",
+    "lib/backend_phoenix/graphql/types.ex",
+    "lib/backend_phoenix/endpoint.ex",
+    "lib/backend_phoenix/repo.ex",
+    "test"
+  ]
+}
