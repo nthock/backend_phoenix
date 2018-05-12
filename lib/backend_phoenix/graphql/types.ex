@@ -7,4 +7,9 @@ defmodule GraphQL.Schema.Types do
     field :key, :string
     field :value, :string
   end
+
+  input_object :login_input do
+    field :email, :string
+    field :password, :string
+  end
 end

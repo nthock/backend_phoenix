@@ -11,15 +11,11 @@ defmodule BackendPhoenix.Accounts do
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.registration_changeset(attrs)
-    |> insert_user
+    |> IO.inspect(label: "User registration changeset")
+    |> Repo.insert
   end
 
-  defp insert_user(%{valid?: false} = changeset) do
-    changeset
-  end
-
-  defp insert_user(%{valid?: true} = changeset) do
-    changeset
-    |> Repo.insert!
+  def get_user_by_email(email) do
+    Repo.get_by(User, email: email)
   end
 end

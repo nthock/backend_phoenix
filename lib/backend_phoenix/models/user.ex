@@ -8,6 +8,7 @@ defmodule BackendPhoenix.Accounts.User do
     field :email, :string
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
+    field :encrypted_password, :string
     field :designation, :string
     field :contact_number, :string
     field :slug, :string
