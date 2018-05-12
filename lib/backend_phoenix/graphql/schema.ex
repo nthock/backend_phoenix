@@ -16,6 +16,11 @@ defmodule GraphQL.Schema do
     field :get_users, type: list_of(:user) do
       resolve(&Resolver.User.list/3)
     end
+
+    field :verify_token, type: :user do
+      arg :token, non_null(:string)
+      resolve(&Resolver.Auth.verify_token/3)
+    end
   end
 
   mutation do

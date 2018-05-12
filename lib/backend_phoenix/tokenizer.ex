@@ -9,4 +9,11 @@ defmodule Tokenizer do
     |> sign
     |> get_compact
   end
+
+  def decode(app_token) do
+    app_token
+    |> token
+    |> with_signer(hs256(@secret))
+    |> verify!
+  end
 end

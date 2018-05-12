@@ -1,6 +1,7 @@
 defmodule GraphQL.Resolver.Auth do
   import Tokenizer
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
+  import Map.Helpers
   alias BackendPhoenix.Accounts
   alias BackendPhoenix.Accounts.User
 
@@ -9,7 +10,16 @@ defmodule GraphQL.Resolver.Auth do
     |> check_user_password(password)
   end
 
-  require IEx
+  def verify_token(_parent, %{token: token}, _context) do
+    case Accounts.get_user_by_token(token) do
+      {:ok, user} ->
+        {:ok, atomize_keys(user)}
+
+      {:error, reason} ->
+        {:ok, %{errors: %{key: "token", value: reason}}}
+    end
+  end
+
   defp check_user_password(%User{} = user, password) do
     password
     |> checkpw(user.encrypted_password)

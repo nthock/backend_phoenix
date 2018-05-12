@@ -2,12 +2,13 @@ defmodule BackendPhoenix.Context.AccountsTest do
   use BackendPhoenix.ConnCase, async: true
   alias BackendPhoenix.Accounts
   import BackendPhoenix.Factory
+  import Map.Helpers
 
   setup do
-    insert(:user, email: "user1@example.com")
+    user = insert(:user, email: "user1@example.com")
     insert(:user, email: "user2@example.com")
 
-    :ok
+    {:ok, %{user: user}}
   end
 
   test "should be able to get all users" do
@@ -51,6 +52,28 @@ defmodule BackendPhoenix.Context.AccountsTest do
       |> Enum.each(fn(invalid_email) ->
         assert Accounts.get_user_by_email(invalid_email) == nil
       end)
+    end
+  end
+
+  describe "Get user by token" do
+    test "should be able to decode token if given a valid token", %{user: user} do
+      user_params =
+        user
+        |> Map.take([:id, :name, :admin, :super_admin])
+
+      token =
+        user_params
+        |> Tokenizer.encode
+
+      assert Accounts.get_user_by_token(token) == {:ok, stringify_keys(user_params)}
+    end
+
+    test "should return error when given an invalid token" do
+      assert {:error, "Invalid signature"} = Accounts.get_user_by_token("invalid_token")
+    end
+
+    test "should return error with missing token when not given token" do
+      assert {:error, "missing token"} = Accounts.get_user_by_token(nil)
     end
   end
 end
