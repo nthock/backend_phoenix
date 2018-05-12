@@ -1,25 +1,31 @@
 defmodule BackendPhoenix.Accounts do
-  import Ecto.Query
+  import Tokenizer
   alias BackendPhoenix.Repo
   alias BackendPhoenix.Accounts.User
 
   def list_users do
     User
-    |> Repo.all
+    |> Repo.all()
   end
 
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.registration_changeset(attrs)
-    |> insert_user
+    |> Repo.insert()
   end
 
-  defp insert_user(%{valid?: false} = changeset) do
-    changeset
+  def get_user_by_email(email) do
+    Repo.get_by(User, email: email)
   end
 
-  defp insert_user(%{valid?: true} = changeset) do
-    changeset
-    |> Repo.insert!
+  def get_user_by_token(nil) do
+    {:error, "missing token"}
+  end
+
+  def get_user_by_token(token) do
+    case decode(token) do
+      {:ok, user} -> {:ok, user}
+      {:error, reason} -> {:error, reason}
+    end
   end
 end

@@ -4,16 +4,17 @@ defmodule BackendPhoenix.Accounts.User do
   alias BackendPhoenix.Accounts.User
 
   schema "users" do
-    field :name, :string
-    field :email, :string
-    field :password, :string, virtual: true
-    field :password_confirmation, :string, virtual: true
-    field :designation, :string
-    field :contact_number, :string
-    field :slug, :string
-    field :super_admin, :boolean
-    field :admin, :boolean
-    field :errors, {:array, :map}, default: [], virtual: true
+    field(:name, :string)
+    field(:email, :string)
+    field(:password, :string, virtual: true)
+    field(:password_confirmation, :string, virtual: true)
+    field(:encrypted_password, :string)
+    field(:designation, :string)
+    field(:contact_number, :string)
+    field(:slug, :string)
+    field(:super_admin, :boolean)
+    field(:admin, :boolean)
+    field(:errors, {:array, :map}, default: [], virtual: true)
 
     timestamps()
   end
@@ -33,8 +34,9 @@ defmodule BackendPhoenix.Accounts.User do
 
   defp hash_password(changeset) do
     case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{password: password} } ->
+      %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
         put_change(changeset, :encrypted_password, Comeonin.Bcrypt.hashpwsalt(password))
+
       _ ->
         changeset
     end
