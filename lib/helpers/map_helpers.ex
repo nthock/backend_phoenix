@@ -1,5 +1,4 @@
 defmodule Map.Helpers do
-
   @doc """
   Convert map string keys to :atom keys
   """

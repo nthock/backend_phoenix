@@ -10,6 +10,7 @@ defmodule BackendPhoenix.GraphQL.AuthResolverTest do
       admin: true,
       super_admin: false
     }
+
     user = insert(:user, user_params)
     {:ok, %{user: user, user_params: user_params}}
   end
@@ -41,16 +42,16 @@ defmodule BackendPhoenix.GraphQL.AuthResolverTest do
       response = post(build_conn(), "/graphql", query: @loginQuery, variables: login_input)
 
       assert %{
-        "data" => %{
-          "authenticate" => %{
-            "errors" => [],
-            "email" => "jimmy@example.com",
-            "id" => _id,
-            "admin" => true,
-            "token" => _token
-          }
-        }
-      } = json_response(response, 200)
+               "data" => %{
+                 "authenticate" => %{
+                   "errors" => [],
+                   "email" => "jimmy@example.com",
+                   "id" => _id,
+                   "admin" => true,
+                   "token" => _token
+                 }
+               }
+             } = json_response(response, 200)
     end
 
     test "login with invalid credentials", %{user: user} do
@@ -62,14 +63,14 @@ defmodule BackendPhoenix.GraphQL.AuthResolverTest do
       response = post(build_conn(), "/graphql", query: @loginQuery, variables: login_input)
 
       assert %{
-        "data" => %{
-          "authenticate" => %{
-            "errors" => [
-              %{"key" => "password", "value" => "is invalid"}
-            ],
-          }
-        }
-      } = json_response(response, 200)
+               "data" => %{
+                 "authenticate" => %{
+                   "errors" => [
+                     %{"key" => "password", "value" => "is invalid"}
+                   ]
+                 }
+               }
+             } = json_response(response, 200)
     end
   end
 
@@ -93,25 +94,28 @@ defmodule BackendPhoenix.GraphQL.AuthResolverTest do
       token =
         user_params
         |> Map.drop([:encrypted_password])
-        |> Tokenizer.encode
+        |> Tokenizer.encode()
 
-      response = post(build_conn(), "/graphql", query: @verifyTokenQuery, variables: %{token: token})
+      response =
+        post(build_conn(), "/graphql", query: @verifyTokenQuery, variables: %{token: token})
 
       assert %{
-        "data" => %{
-          "verifyToken" => %{
-            "admin" => true,
-            "name" => "Jimmy",
-            "super_admin" => false,
-            "id" => _id
-          }
-        }
-      } = json_response(response, 200)
+               "data" => %{
+                 "verifyToken" => %{
+                   "admin" => true,
+                   "name" => "Jimmy",
+                   "super_admin" => false,
+                   "id" => _id
+                 }
+               }
+             } = json_response(response, 200)
     end
 
     test "verify invalid token" do
       token = "not_a_valid_token"
-      response = post(build_conn(), "/graphql", query: @verifyTokenQuery, variables: %{token: token})
+
+      response =
+        post(build_conn(), "/graphql", query: @verifyTokenQuery, variables: %{token: token})
 
       assert %{"data" => %{"verifyToken" => %{"errors" => errors}}} = json_response(response, 200)
       assert %{"key" => "token", "value" => "Invalid signature"} = List.first(errors)

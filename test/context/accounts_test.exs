@@ -12,7 +12,7 @@ defmodule BackendPhoenix.Context.AccountsTest do
   end
 
   test "should be able to get all users" do
-    users = Accounts.list_users
+    users = Accounts.list_users()
     assert Enum.count(users) == 2
   end
 
@@ -24,6 +24,7 @@ defmodule BackendPhoenix.Context.AccountsTest do
         password: "password123",
         password_confirmation: "password123"
       }
+
       {:ok, user} = Accounts.create_user(attrs)
       assert %{name: "Test User", email: "test@example.com"} = user
     end
@@ -35,6 +36,7 @@ defmodule BackendPhoenix.Context.AccountsTest do
         password: "password123",
         password_confirmation: "password1234"
       }
+
       assert {:error, changeset} = Accounts.create_user(attrs)
       assert {:password_confirmation, {error_message, _}} = List.first(changeset.errors)
       assert error_message == "does not match"
@@ -49,7 +51,7 @@ defmodule BackendPhoenix.Context.AccountsTest do
 
     test "should return nil when given an invalid email or email not found in the system" do
       ["invalid_email", "user3@notvalid.com"]
-      |> Enum.each(fn(invalid_email) ->
+      |> Enum.each(fn invalid_email ->
         assert Accounts.get_user_by_email(invalid_email) == nil
       end)
     end
@@ -63,7 +65,7 @@ defmodule BackendPhoenix.Context.AccountsTest do
 
       token =
         user_params
-        |> Tokenizer.encode
+        |> Tokenizer.encode()
 
       assert Accounts.get_user_by_token(token) == {:ok, stringify_keys(user_params)}
     end

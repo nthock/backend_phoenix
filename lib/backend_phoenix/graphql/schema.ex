@@ -18,19 +18,19 @@ defmodule GraphQL.Schema do
     end
 
     field :verify_token, type: :user do
-      arg :token, non_null(:string)
+      arg(:token, non_null(:string))
       resolve(&Resolver.Auth.verify_token/3)
     end
   end
 
   mutation do
     field :create_user, type: :user do
-      arg :input, non_null(:user_input)
+      arg(:input, non_null(:user_input))
       resolve(&Resolver.User.create/3)
     end
 
     field :authenticate, type: :user do
-      arg :input, non_null(:login_input)
+      arg(:input, non_null(:login_input))
       resolve(&Resolver.Auth.create/3)
     end
   end

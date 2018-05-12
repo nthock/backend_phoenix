@@ -56,6 +56,7 @@ defmodule BackendPhoenix.GraphQL.UserResolverTest do
       password: "password123",
       password_confirmation: "password123"
     }
+
     response =
       build_conn()
       |> post("/graphql", query: @createUserMutation, variables: variables)
@@ -73,6 +74,7 @@ defmodule BackendPhoenix.GraphQL.UserResolverTest do
       password: "password123",
       password_confirmation: "password1234"
     }
+
     response =
       build_conn()
       |> post("/graphql", query: @createUserMutation, variables: variables)

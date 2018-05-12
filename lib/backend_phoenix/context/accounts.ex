@@ -5,13 +5,13 @@ defmodule BackendPhoenix.Accounts do
 
   def list_users do
     User
-    |> Repo.all
+    |> Repo.all()
   end
 
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.registration_changeset(attrs)
-    |> Repo.insert
+    |> Repo.insert()
   end
 
   def get_user_by_email(email) do
