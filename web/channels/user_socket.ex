@@ -2,7 +2,7 @@ defmodule BackendPhoenix.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", BackendPhoenix.RoomChannel
+  channel "room:*", BackendPhoenix.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
