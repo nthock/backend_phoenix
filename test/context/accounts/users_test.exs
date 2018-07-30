@@ -1,6 +1,6 @@
 defmodule BackendPhoenix.Context.AccountsTest do
   use BackendPhoenix.ConnCase, async: true
-  alias BackendPhoenix.Accounts
+  alias BackendPhoenix.Accounts.Users
   import BackendPhoenix.Factory
   import Map.Helpers
 
@@ -12,7 +12,7 @@ defmodule BackendPhoenix.Context.AccountsTest do
   end
 
   test "should be able to get all users" do
-    users = Accounts.list_users()
+    users = Users.list()
     assert Enum.count(users) == 2
   end
 
@@ -25,7 +25,7 @@ defmodule BackendPhoenix.Context.AccountsTest do
         password_confirmation: "password123"
       }
 
-      {:ok, user} = Accounts.create_user(attrs)
+      {:ok, user} = Users.create(attrs)
       assert %{name: "Test User", email: "test@example.com"} = user
     end
 
@@ -37,7 +37,7 @@ defmodule BackendPhoenix.Context.AccountsTest do
         password_confirmation: "password1234"
       }
 
-      assert {:error, changeset} = Accounts.create_user(attrs)
+      assert {:error, changeset} = Users.create(attrs)
       assert {:password_confirmation, {error_message, _}} = List.first(changeset.errors)
       assert error_message == "does not match"
     end
@@ -45,14 +45,14 @@ defmodule BackendPhoenix.Context.AccountsTest do
 
   describe "Get user by email" do
     test "should be able to get the correct user when given a valid email" do
-      user = Accounts.get_user_by_email("user1@example.com")
+      user = Users.get_by_email("user1@example.com")
       assert %{email: "user1@example.com"} = user
     end
 
     test "should return nil when given an invalid email or email not found in the system" do
       ["invalid_email", "user3@notvalid.com"]
       |> Enum.each(fn invalid_email ->
-        assert Accounts.get_user_by_email(invalid_email) == nil
+        assert Users.get_by_email(invalid_email) == nil
       end)
     end
   end
@@ -67,15 +67,15 @@ defmodule BackendPhoenix.Context.AccountsTest do
         user_params
         |> Tokenizer.encode()
 
-      assert Accounts.get_user_by_token(token) == {:ok, stringify_keys(user_params)}
+      assert Users.get_by_token(token) == {:ok, stringify_keys(user_params)}
     end
 
     test "should return error when given an invalid token" do
-      assert {:error, "Invalid signature"} = Accounts.get_user_by_token("invalid_token")
+      assert {:error, "Invalid signature"} = Users.get_by_token("invalid_token")
     end
 
     test "should return error with missing token when not given token" do
-      assert {:error, "missing token"} = Accounts.get_user_by_token(nil)
+      assert {:error, "missing token"} = Users.get_by_token(nil)
     end
   end
 end

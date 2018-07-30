@@ -1,5 +1,5 @@
 defmodule BackendPhoenix.UserFactory do
-  alias BackendPhoenix.Accounts.User
+  alias BackendPhoenix.Accounts.Schema.User
 
   defmacro __using__(_opts) do
     quote do

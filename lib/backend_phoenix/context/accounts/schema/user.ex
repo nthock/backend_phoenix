@@ -1,7 +1,7 @@
-defmodule BackendPhoenix.Accounts.User do
+defmodule BackendPhoenix.Accounts.Schema.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias BackendPhoenix.Accounts.User
+  alias BackendPhoenix.Accounts.Schema.User
 
   schema "users" do
     field(:name, :string)

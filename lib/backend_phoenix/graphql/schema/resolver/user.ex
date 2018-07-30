@@ -1,13 +1,13 @@
 defmodule GraphQL.Resolver.User do
   import Tokenizer
-  alias BackendPhoenix.Accounts
+  alias BackendPhoenix.Accounts.Users
 
   def list(_parent, _input, _context) do
-    {:ok, Accounts.list_users()}
+    {:ok, Users.list()}
   end
 
   def create(_parent, %{input: attributes}, _info) do
-    with {:ok, user} <- Accounts.create_user(attributes) do
+    with {:ok, user} <- Users.create(attributes) do
       user
       |> issue_token
     end
