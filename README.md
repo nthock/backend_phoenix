@@ -27,3 +27,10 @@ To generate the test coverage report:
 ```
 MIX_ENV=test mix coveralls.html
 ```
+
+## Features
+- Invite Admin
+- Invite User
+- User Accept Invite
+- User Forget Password
+- User Reset Password

@@ -1,4 +1,4 @@
-defmodule BackendPhoenix.Context.AccountsTest do
+defmodule BackendPhoenix.Context.Accounts.UsersTest do
   use BackendPhoenix.ConnCase, async: true
   alias BackendPhoenix.Accounts.Users
   import BackendPhoenix.Factory

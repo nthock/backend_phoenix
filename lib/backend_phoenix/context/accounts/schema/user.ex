@@ -32,6 +32,12 @@ defmodule BackendPhoenix.Accounts.Schema.User do
     |> hash_password
   end
 
+  def admin_changeset(%User{} = user, attrs) do
+    user
+    |> registration_changeset(attrs)
+    |> put_change(:admin, true)
+  end
+
   defp hash_password(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
