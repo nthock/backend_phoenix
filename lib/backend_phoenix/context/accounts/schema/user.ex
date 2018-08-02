@@ -21,7 +21,7 @@ defmodule BackendPhoenix.Accounts.Schema.User do
     field(:invitation_created_at, :utc_datetime)
     field(:invitation_sent_at, :utc_datetime)
     field(:invitation_accepted, :boolean)
-    field(:invitation_accepted_at, :boolean)
+    field(:invitation_accepted_at, :utc_datetime)
     field(:invitation_limit, :integer)
     field(:invited_by_id, :integer)
     field(:invited_by_type, :string)
@@ -60,6 +60,20 @@ defmodule BackendPhoenix.Accounts.Schema.User do
     |> ensure_inviter_super_admin(inviter_id)
   end
 
+  def admin_accept_invitation_changeset(user, _attrs) when is_nil(user) do
+    %User{}
+    |> cast(%{}, @valid_attrs)
+    |> add_error(:id, "not a valid user")
+  end
+
+  def admin_accept_invitation_changeset(%User{} = user, attrs) do
+    user
+    |> registration_changeset(attrs)
+    |> put_change(:invitation_accepted, true)
+    |> put_change(:invitation_token, nil)
+    |> put_change(:invitation_accepted_at, Timex.now)
+  end
+
   defp ensure_inviter_super_admin(changeset, inviter_id) do
     validate_change changeset, :invited_by_id, fn _, _ ->
       inviter_id
@@ -89,7 +103,7 @@ defmodule BackendPhoenix.Accounts.Schema.User do
     []
   end
 
-  defp check_super_admin(user) do
+  defp check_super_admin(_user) do
     [invited_by_id: "Must be a super_admin"]
   end
 end

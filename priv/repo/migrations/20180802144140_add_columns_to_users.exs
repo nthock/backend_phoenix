@@ -9,7 +9,7 @@ defmodule BackendPhoenix.Repo.Migrations.AddColumnsToUsers do
       add :invitation_created_at, :utc_datetime
       add :invitation_sent_at, :utc_datetime
       add :invitation_accepted, :boolean, default: false
-      add :invitation_accepted_at, :boolean
+      add :invitation_accepted_at, :utc_datetime
       add :invitation_limit, :integer
       add :invited_by_id, :integer
       add :invited_by_type, :string

@@ -22,6 +22,10 @@ defmodule BackendPhoenix.Accounts.Users do
     Repo.get_by(User, email: email)
   end
 
+  def get_by_invitation_token(token) do
+    Repo.get_by(User, invitation_token: token)
+  end
+
   def get_by_token(nil) do
     {:error, "missing token"}
   end

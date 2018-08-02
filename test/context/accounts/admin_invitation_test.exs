@@ -42,4 +42,48 @@ defmodule BackendPhoenix.Context.Accounts.AdminInvitationTest do
       assert error_message == "Must be a super_admin"
     end
   end
+
+  describe "accept/2" do
+    setup %{super_admin: super_admin} do
+      {:ok, user} = AdminInvitation.create(@valid_attrs, super_admin.id)
+      {:ok, %{user: user}}
+    end
+
+    test "should be able to accept invitation with the correct attributes", %{user: user} do
+      attrs = %{
+        invitation_token: user.invitation_token,
+        password: "password",
+        password_confirmation: "password"
+      }
+
+      assert {:ok, user} = AdminInvitation.accept(attrs)
+      assert user.invitation_accepted
+      assert is_nil(user.invitation_token)
+      refute is_nil(user.invitation_accepted_at)
+    end
+
+    test "should return error if accepting invitation with incorrect attributes", %{user: user} do
+      attrs = %{
+        invitation_token: user.invitation_token,
+        password: "password",
+        password_confirmation: "another_password"
+      }
+
+      assert {:error, changeset} = AdminInvitation.accept(attrs)
+      assert {:password_confirmation, {error_message, _}} = List.first(changeset.errors)
+      assert error_message == "does not match"
+    end
+
+    test "should return error if the invitation token is not valid" do
+      attrs = %{
+        invitation_token: "not_a_valid_token",
+        password: "password",
+        password_confirmation: "password"
+      }
+
+      assert {:error, changeset} = AdminInvitation.accept(attrs)
+      assert {:id, {error_message, _}} = List.first(changeset.errors)
+      assert error_message == "not a valid user"
+    end
+  end
 end
