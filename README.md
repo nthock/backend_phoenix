@@ -29,6 +29,7 @@ MIX_ENV=test mix coveralls.html
 ```
 
 ## Features
+- Create Admin
 - Invite Admin
 - Invite User
 - User Accept Invite

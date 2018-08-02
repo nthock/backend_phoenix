@@ -47,6 +47,7 @@ defmodule BackendPhoenix.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:cors_plug, "~> 1.5"},
+      {:hashids, "~> 2.0"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:joken, "~> 1.1"},
@@ -54,6 +55,8 @@ defmodule BackendPhoenix.Mixfile do
       {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4.0"},
+      {:timex, "~> 3.1"},
+      {:timex_ecto, "~> 3.0"},
       {:excoveralls, "~> 0.8", only: :test}
     ]
   end
