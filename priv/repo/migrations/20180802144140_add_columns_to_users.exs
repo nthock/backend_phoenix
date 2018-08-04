@@ -4,7 +4,7 @@ defmodule BackendPhoenix.Repo.Migrations.AddColumnsToUsers do
   def change do
     alter table(:users) do
       add :reset_password_token, :string
-      add :reset_password_sent_at, :string
+      add :reset_password_sent_at, :utc_datetime
       add :invitation_token, :string
       add :invitation_created_at, :utc_datetime
       add :invitation_sent_at, :utc_datetime

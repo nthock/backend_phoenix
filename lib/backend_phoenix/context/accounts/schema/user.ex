@@ -16,7 +16,7 @@ defmodule BackendPhoenix.Accounts.Schema.User do
     field(:super_admin, :boolean)
     field(:admin, :boolean)
     field(:reset_password_token, :string)
-    field(:reset_password_sent_at, :string)
+    field(:reset_password_sent_at, :utc_datetime)
     field(:invitation_token, :string)
     field(:invitation_created_at, :utc_datetime)
     field(:invitation_sent_at, :utc_datetime)
@@ -39,9 +39,7 @@ defmodule BackendPhoenix.Accounts.Schema.User do
     |> cast(attrs, @valid_attrs)
     |> validate_required(@required_attrs)
     |> validate_format(:email, ~r/(\w+)@([\w.]+)/)
-    |> validate_length(:password, min: 6, max: 100)
-    |> validate_confirmation(:password, message: "does not match")
-    |> hash_password
+    |> password_changeset()
   end
 
   def admin_changeset(%User{} = user, attrs) do
@@ -74,12 +72,47 @@ defmodule BackendPhoenix.Accounts.Schema.User do
     |> put_change(:invitation_accepted_at, Timex.now)
   end
 
+  def forget_password_changeset(user) when is_nil(user) do
+    %User{}
+    |> cast(%{}, @valid_attrs)
+    |> add_error(:id, "not a valid user")
+  end
+
+  def forget_password_changeset(%User{} = user) do
+    user
+    |> cast(%{}, @valid_attrs)
+    |> put_change(:reset_password_token, create_reset_password_token())
+    |> put_change(:reset_password_sent_at, Timex.now)
+    |> validate_required([:reset_password_token, :reset_password_sent_at])
+  end
+
+  def reset_password_changeset(user, _attrs) when is_nil(user) do
+    %User{}
+    |> cast(%{}, @valid_attrs)
+    |> add_error(:id, "not a valid user")
+  end
+
+  def reset_password_changeset(%User{} = user, attrs) do
+    user
+    |> cast(attrs, @valid_attrs)
+    |> password_changeset()
+    |> put_change(:reset_password_token, nil)
+    |> put_change(:reset_password_sent_at, nil)
+  end
+
   defp ensure_inviter_super_admin(changeset, inviter_id) do
     validate_change changeset, :invited_by_id, fn _, _ ->
       inviter_id
       |> Users.get!()
       |> check_super_admin()
     end
+  end
+
+  defp password_changeset(changeset) do
+    changeset
+    |> validate_length(:password, min: 6, max: 100)
+    |> validate_confirmation(:password, message: "does not match")
+    |> hash_password
   end
 
   defp hash_password(changeset) do
@@ -98,6 +131,11 @@ defmodule BackendPhoenix.Accounts.Schema.User do
   end
 
   defp create_invitation_token(_attrs, _inviter_id), do: "some_random_token"
+
+  defp create_reset_password_token() do
+    :crypto.hmac(:sha256, "BackendPhoenixRestPW", "Reset Password: #{Timex.now}")
+    |> Base.encode16(case: :lower)
+  end
 
   defp check_super_admin(%{super_admin: true}) do
     []

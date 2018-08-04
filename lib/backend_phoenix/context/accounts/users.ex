@@ -26,6 +26,10 @@ defmodule BackendPhoenix.Accounts.Users do
     Repo.get_by(User, invitation_token: token)
   end
 
+  def get_by_reset_password_token(token) do
+    Repo.get_by(User, reset_password_token: token)
+  end
+
   def get_by_token(nil) do
     {:error, "missing token"}
   end
